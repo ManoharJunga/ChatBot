@@ -1,25 +1,27 @@
-import { TextField } from "@mui/material";
-
+import TextField from "@mui/material/TextField";
 type Props = {
-    name: string;
-    type: string;
-    label: string;
-    marginBottom?: string; // Optionally accept marginBottom prop
-}
-
+  name: string;
+  type: string;
+  label: string;
+};
 const CustomizedInput = (props: Props) => {
-    const { name, type, label, marginBottom } = props;
-
-    return (
-        <TextField 
-            InputLabelProps={{ style: { color: "white" } }} 
-            name={name} 
-            label={label} 
-            type={type}
-            autoComplete="current-password" 
-            InputProps={{ style: { width: "400px", borderRadius: 10, fontSize: 20, color: "white", marginBottom: marginBottom || '16px' } }}
-        />
-    );
-}
+  return (
+    <TextField
+      margin="normal"
+      InputLabelProps={{ style: { color: "white" } }}
+      name={props.name}
+      label={props.label}
+      type={props.type}
+      InputProps={{
+        style: {
+          width: "400px",
+          borderRadius: 10,
+          fontSize: 20,
+          color: "white",
+        },
+      }}
+    />
+  );
+};
 
 export default CustomizedInput;

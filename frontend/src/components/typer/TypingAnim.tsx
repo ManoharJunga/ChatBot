@@ -1,15 +1,14 @@
 import { TypeAnimation } from "react-type-animation";
 
-const TypingAnim = () => {
+const MedicalChatBotTypingAnim = () => {
   return (
     <TypeAnimation
       sequence={[
-        // Same substring at the start will only be typed once, initially
-        "Chat With Your OWN AI",
+        "Welcome to Medical ChatBot 🩺",
         1000,
-        "Built With OpenAI 🤖",
+        "Ask me anything about your health!",
         2000,
-        "Your Own Customized ChatGPT 💻",
+        "I can help with symptoms, conditions, and more.",
         1500,
       ]}
       speed={50}
@@ -24,4 +23,4 @@ const TypingAnim = () => {
   );
 };
 
-export default TypingAnim;
+export default MedicalChatBotTypingAnim;

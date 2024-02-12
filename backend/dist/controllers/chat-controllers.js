@@ -29,7 +29,7 @@ export const generateChatCompletion = async (req, res, next) => {
         return res.status(200).json({ chats: user.chats });
     }
     catch (error) {
-        console.log(error);
+        console.log("Error:", error);
         return res.status(500).json({ message: "Something went wrong" });
     }
 };

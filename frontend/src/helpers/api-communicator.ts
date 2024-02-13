@@ -44,13 +44,28 @@ export const sendChatRequest = async (message: string) => {
 };
 
 export const getUserChats = async () => {
-  const res = await axios.get("/chat/all-chats");
-  if (res.status !== 200) {
-    throw new Error("Unable to send chat");
+  try {
+    const res = await axios.get("/chat/all-chats");
+    if (res.status !== 200) {
+      throw new Error("Unable to fetch chats");
+    }
+    const data = await res.data;
+    
+    // Ensure data.chats is an array
+    if (!Array.isArray(data.chats)) {
+      throw new Error("Chats data is not in the expected format");
+    }
+    
+    return data;
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      throw new Error("Error fetching chats: " + error.message);
+    } else {
+      throw new Error("An unknown error occurred while fetching chats.");
+    }
   }
-  const data = await res.data;
-  return data;
 };
+
 
 export const deleteUserChats = async () => {
   const res = await axios.delete("/chat/delete");

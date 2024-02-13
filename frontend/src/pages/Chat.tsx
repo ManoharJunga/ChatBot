@@ -29,8 +29,7 @@ const Chat = () => {
     setChatMessages((prev) => [...prev, newMessage]);
     const chatData = await sendChatRequest(content);
     setChatMessages((prev) => [...prev, ...chatData.chats]); 
-  };
-  
+  }; 
   const handleDeleteChats = async () => {
     try {
       toast.loading("Deleting Chats", { id: "deletechats" });

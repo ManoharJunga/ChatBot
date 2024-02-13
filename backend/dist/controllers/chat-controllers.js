@@ -14,22 +14,25 @@ export const generateChatCompletion = async (req, res, next) => {
             role,
             content,
         }));
+        // Add the new user message to the chats array
         chats.push({ content: message, role: "user" });
         user.chats.push({ content: message, role: "user" });
-        // send all chats with new one to openAI API
+        // Send all chats with the new message to OpenAI API for chat completion
         const config = configureOpenAI();
         const openai = new OpenAIApi(config);
-        // get latest response
         const chatResponse = await openai.createChatCompletion({
             model: "gpt-3.5-turbo",
             messages: chats,
         });
+        // Add the response from OpenAI to user chats
         user.chats.push(chatResponse.data.choices[0].message);
+        // Save the updated user object
         await user.save();
+        // Return the updated chats array in the response
         return res.status(200).json({ chats: user.chats });
     }
     catch (error) {
-        console.log("Error:", error);
+        console.error("Error:", error);
         return res.status(500).json({ message: "Something went wrong" });
     }
 };

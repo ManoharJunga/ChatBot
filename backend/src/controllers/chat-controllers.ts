@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import User from "../models/User.js";
 import { configureOpenAI } from "../config/openai-config.js";
 import { OpenAIApi, ChatCompletionRequestMessage } from "openai";
@@ -9,24 +9,19 @@ export const generateChatCompletion = async (
   next: NextFunction
 ) => {
   const { message } = req.body;
+  
   try {
+    // Verify user authentication
     const user = await User.findById(res.locals.jwtData.id);
-    if (!user)
-      return res
-        .status(401)
-        .json({ message: "User not registered OR Token malfunctioned" });
+    if (!user) {
+      return res.status(401).json({ message: "User not registered or token malfunctioned" });
+    }
 
-    // grab chats of user
-    const chats = user.chats.map(({ role, content }) => ({
-      role,
-      content,
-    })) as ChatCompletionRequestMessage[];
-
-    // Add the new user message to the chats array
+    // Prepare chat messages
+    const chats = user.chats.map(({ role, content }) => ({ role, content })) as ChatCompletionRequestMessage[];
     chats.push({ content: message, role: "user" });
-    user.chats.push({ content: message, role: "user" });
 
-    // Send all chats with the new message to OpenAI API for chat completion
+    // Send chat messages to OpenAI for completion
     const config = configureOpenAI();
     const openai = new OpenAIApi(config);
     const chatResponse = await openai.createChatCompletion({
@@ -34,16 +29,14 @@ export const generateChatCompletion = async (
       messages: chats,
     });
 
-    // Add the response from OpenAI to user chats
+    // Update user chats with the completion
     user.chats.push(chatResponse.data.choices[0].message);
-
-    // Save the updated user object
     await user.save();
 
-    // Return the updated chats array in the response
+    // Return updated chats array
     return res.status(200).json({ chats: user.chats });
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Error generating chat completion:", error);
     return res.status(500).json({ message: "Something went wrong" });
   }
 };
